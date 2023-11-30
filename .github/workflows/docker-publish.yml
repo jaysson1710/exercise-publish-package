@@ -58,6 +58,27 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Get tag
+        id: tag
+        if: github.event_name == 'push'
+        uses: devops-actions/action-get-tag@v1.0.1
+        with:
+          strip_v: true # Optional: Remove 'v' character from version
+          default: v0.0.0 # Optional: Default version when tag not found
+
+      - name: Create Release
+        id: create_release
+        if: github.event_name == 'push'
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{steps.tag.outputs.tag}}
+          release_name: Release ${{steps.tag.outputs.tag}}
+          body: ...
+          draft: false
+          prerelease: false
+          
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
@@ -65,8 +86,8 @@ jobs:
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: ./sample-packages/docker/
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          push: ${{ github.event_name == 'push tag' }}
+          tags: ${{steps.tag.outputs.tag}}
+          labels: ${{steps.tag.outputs.tag}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
