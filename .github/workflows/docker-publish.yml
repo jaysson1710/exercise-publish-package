@@ -75,7 +75,7 @@ jobs:
         with:
           tag_name: v${{steps.tag.outputs.next_version}}
           release_name: v${{steps.tag.outputs.next_version}}
-          body: ...
+          body: ${{ github.event.head_commit.message }}
           draft: false
           prerelease: false
           
@@ -86,7 +86,7 @@ jobs:
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: ./sample-packages/docker/
-          push: ${{ github.event_name == 'push tag' }}
+          push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
