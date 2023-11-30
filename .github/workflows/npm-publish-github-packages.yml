@@ -26,10 +26,11 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v1
         with:
           node-version: 16
           registry-url: https://npm.pkg.github.com/
+          token: ${{secrets.GITHUB_TOKEN}}
       - run: npm install
         working-directory: ./sample-packages/npm/
       - run: npm publish
