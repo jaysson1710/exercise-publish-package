@@ -1,3 +1,12 @@
 {
-  "your": "json config here"
+  "your": "json config here",
+  "name": "@jaysson1710/npm-sample-packages",
+  "version": "1.0.1",
+  "description": "test npm new project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
 }
